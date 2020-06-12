@@ -1,6 +1,5 @@
-# kafka-producer-issue
+# How to reproduce
 
-##How to reproduce
 1. Run Kafka in docker container (e.g. wurstmeister/kafka:latest)
 2. Set kafka.servers to <host:port> of Kafka bootstrap servers in application.properties
 3. Build and run Spring application
