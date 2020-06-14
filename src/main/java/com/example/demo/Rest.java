@@ -16,9 +16,15 @@ public class Rest {
         return sendService.send();
     }
 
-    // sending message to specified topic name
+    // sending message to topic2
     @GetMapping("/sendToTopic2")
     public Mono<String> sendTo() {
         return sendService.sendToTopic2();
+    }
+
+    // sending message to topic1
+    @GetMapping("/sendToTopic1")
+    public Mono<String> sendTo0() {
+        return sendService.sendToTopic1();
     }
 }

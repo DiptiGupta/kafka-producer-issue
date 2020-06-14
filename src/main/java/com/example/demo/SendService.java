@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.RoutingKafkaTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 public class SendService {
 
     @Autowired
-    private RoutingKafkaTemplate routingTemplate;
+    private KafkaTemplate<String,String> kafkaTemplate;
 
     public Mono<String> send() {
         final String TOPIC1 = "Topic1";
@@ -27,19 +27,22 @@ public class SendService {
         return sendToTopic("Topic2", "singleMessage");
     }
 
+    public Mono<String> sendToTopic1() {
+
+        return sendToTopic("Topic1", "singleMessage");
+    }
+
     private Mono<String> sendToTopic(String topic, String message) {
         System.out.println("sending messages to kafka on topic ---" + topic);
-        return Mono.create(sink -> {
-            routingTemplate.send(topic, message)
-                    .addCallback(
-                            ok -> {
-                                System.out.println("Successfully sent: " + message);
-                                sink.success(message);
-                            },
-                            err -> {
-                                System.out.println("Failed to send: " + message);
-                                sink.error(err);
-                            });
-        });
+        return Mono.create(sink -> kafkaTemplate.send(topic, message)
+                .addCallback(
+                        ok -> {
+                            System.out.println("Successfully sent: " + message);
+                            sink.success(message);
+                        },
+                        err -> {
+                            System.out.println("Failed to send: " + message);
+                            sink.error(err);
+                        }));
     }
 }
